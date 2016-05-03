@@ -32,40 +32,30 @@ yTPbowz//zo4Hn0k03aQ2Cw1FNir6hM52tBBsPInt++ZNpcDczDG0Mk=
 HERE
 
 private_key = OpenSSL::PKey::RSA.new license_text
+puts "Private Key:"
+puts private_key
+public_key = private_key.public_key
+puts "Public Key:"
+puts public_key
+
 Gitlab::License.encryption_key = private_key
 license = Gitlab::License.new
 license.licensee = {
-  "Name"    => "Douwe Maan",
-  "Company" => "GitLab B.V.",
-  "Email"   => "douwe@gitlab.com"
+  "Name"    => "agm",
+  "Company" => "AnGaoMeng Ltd.",
+  "Email"   => "gitlab@miteke.com"
 }
 
-license.starts_at = Date.new(2015, 4, 24)
-license.expires_at = Date.new(2016, 5, 23)
-license.notify_admins_at  = Date.new(2016, 5, 19)
-license.notify_users_at   = Date.new(2016, 5, 23)
-license.block_changes_at  = Date.new(2016, 6, 7)
-
+today = Date.today
+license.starts_at = today
+license.expires_at = today.next_day(365)
+license.notify_admins_at = today.next_day(350)
+license.notify_users_at = today.next_day(360)
+license.block_changes_at = today.next_day(370)
 license.restrictions  = {
-  active_user_count: 10000
+  active_user_count: 1000
 }
-
-
-
-puts "License:"
-
-puts license
 
 data = license.export
-
-puts "Exported license:"
-
+puts "License:"
 puts data
-
-Gitlab::License.encryption_key = private_key.public_key
-
-$license = Gitlab::License.import(data)
-
-puts "Imported license:"
-
-puts $license
